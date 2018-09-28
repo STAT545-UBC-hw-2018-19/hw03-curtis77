@@ -1,0 +1,67 @@
+---
+title: "Gapminder-Exploration"
+output: 
+  html_document:
+    keep_md: yes
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r cars}
+library(gapminder)
+library(tidyverse)
+```
+
+# Tasks
+
+## Task 1 (In progress)
+The first thing I will do is extract the minimum and maximum GDP per capita for each of the continents. I will use the group by and summarise functions to extract the necessary data. 
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarize(min = min(gdpPercap),max = max(gdpPercap)) %>%
+  ggplot(aes(continent,min)) + 
+  geom_bar(stat = "identity") + ggplot(aes(continent,max)) + geom_bar(stat = "identity")
+```
+
+## Task 2 (to complete)
+I now compare the spread of GDP across the various continents. I chose to use GDP and not GDP per capita to make things more interesting. I used a boxplot since it allows you to compare spread of data very easily. Note log base 10 scaling.
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  mutate(GDP = gdpPercap*pop)# %>% # extracts GDP by multiplying GDP per capita by population
+  #summarize(max(GDP) - min(GDP))
+
+# ggplot(df, aes(continent,GDP)) + geom_boxplot() + scale_y_log10() # added log 10 scaling to plot, to make plot more readable
+```
+
+## Task 3 (In progress)
+Here I computed the weighted mean.
+```{r}
+gapminder %>%
+  group_by(year) %>%
+  summarize(mean(lifeExp))
+```
+
+## Task 4
+I chose to attempt the open-ended task. I took the difference between lag life expectancy and life expectancy, and sort countries in descending order, in order to determine which countries had the largest drops in life expectancy. I only plotted those countries where the life expectancy dropped by more than 6, to keep the plot from becoming too Scluttered.
+```{r}
+df <- gapminder %>% # extracts and sorts largest drops in life expectancy by country
+  group_by(country) %>%
+  mutate(change = lag(lifeExp) - lifeExp) %>%
+  filter(!is.na(change), change > 6) %>%
+  summarize(ma = max(change)) %>%
+  arrange(desc(ma))
+
+df # to print out table
+
+ggplot(df, aes(country,ma)) +  # to create bar chart comparing country life expectancy
+  geom_bar(stat = "identity")
+```
+
+As we can see, Rwanda had the largest drop in life expectancy across all countries. This is due the genocide that occurred in the country in 1992. Various other countries on this list had other horrific events happen as well.
