@@ -120,8 +120,6 @@ ggplot(gapminder, aes(continent, gdpPercap)) +
 
 As we can see from both the boxplots and the table, Asia has by far the largest spread of GDP per capita's.
 
-Here we examine the number of countries in each continent that have a life expectancy over 50, and how this changes over time.
-
 ## Task 3
 
 Here I compare how mean life expectancy for each continent is changing over time. I chose to use the average life expectancy to avoid having the plots become too cluttered. As well, I chose to use scatterplots, as I am plotting 2 quantitative variables.
@@ -165,6 +163,7 @@ Overall, it seems like all continents have gradually increasing life expectancie
 
 ## Task 4
 
+Here we examine the number of countries in each continent that have a life expectancy over 50, and how this changes over time.
 
 ```r
 df <- gapminder %>%
