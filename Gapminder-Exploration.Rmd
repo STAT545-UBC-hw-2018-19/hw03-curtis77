@@ -26,15 +26,15 @@ library(tidyverse)
 ## Task 1 
 
 The first thing I will do is extract the minimum and maximum GDP per capita for each of the continents. I then extract the minimum and maximum life expectancies across all the continents. I will use the group by and summarise functions to extract the necessary data.  I then plot both the min and max life expectancies for all continents.
-```{r results = 'asis'}
+```{r}
 df <- gapminder %>%
   group_by(continent) %>%
   summarize(min = min(gdpPercap),max = max(gdpPercap)) 
-knitr::kable(df) # print table
+df # print table
 
 df2 <- df %>%
   summarize(minAll = min(min),maxAll = max(max))
-knitr::kable(df2) # print table
+df2 # print table
 
 ggplot(df, aes(continent,min)) + 
   geom_bar(stat = "identity") + 
@@ -49,11 +49,11 @@ ggplot(df, aes(continent,max)) +
 ## Task 2
 
 I now compare the spread of GDP per capita across the various continents, by computing the maximum and minimum GDP per capita and taking the difference. I used a boxplot since it allows you to compare spread of data very easily. 
-```{r results = 'asis'}
+```{r}
 df <- gapminder %>%
   group_by(continent) %>%
   summarize(diff = max(gdpPercap) - min(gdpPercap)) # compute difference between max and min GDP per capita for each continent
-knitr::kable(df) # show table
+df # show table
 ggplot(gapminder, aes(continent, gdpPercap)) + 
   geom_boxplot() + ggtitle("Comparison of GDP per capita by Continent") + 
   ylab("GDP per capita") 
@@ -66,11 +66,11 @@ Here we examine the number of countries in each continent that have a life expec
 ## Task 3
 
 Here I compare how mean life expectancy for each continent is changing over time. I chose to use the average life expectancy to avoid having the plots become too cluttered. As well, I chose to use scatterplots, as I am plotting 2 quantitative variables.
-```{r results = 'asis'}
+```{r}
 df <- gapminder %>%
   group_by(year,continent) %>%
   summarize(meanlifeExp = mean(lifeExp)) # group by continent and year, and compute mean life expectnacy for each grouping
-knitr::kable(df) # print table
+df # print table
 ggplot(df, aes(year, meanlifeExp)) + 
   geom_point() + 
   facet_wrap(~ continent) + 
@@ -82,12 +82,12 @@ Overall, it seems like all continents have gradually increasing life expectancie
 
 ## Task 4
 
-```{r results = 'asis'}
+```{r}
 df <- gapminder %>%
   group_by(year,continent) %>%
   filter(lifeExp > 50)
 df <- count(df) # stores number of countries with a life expectancy > 50 in a given continent, for each year, in a variable called n
-knitr::kable(df) # prints table
+df # prints table
 ggplot(df, aes(year, n)) + 
   geom_point() + 
   facet_wrap(~ continent) + 
@@ -101,14 +101,14 @@ As we can see, Africa and Asia have the largest increase over time in terms of t
 ## Task 5
 
 I chose to attempt the open-ended task. I took the difference between lag life expectancy and life expectancy, and sort countries in descending order, in order to determine which countries had the largest drops in life expectancy (over 5 year span). I only plotted those countries where the life expectancy dropped by more than 6, to keep the plot from becoming too Scluttered.
-```{r results = 'asis'}
+```{r}
 df <- gapminder %>% # extracts and sorts largest drops in life expectancy by country
   group_by(country) %>%
   mutate(change = lag(lifeExp) - lifeExp) %>%
   filter(!is.na(change), change > 6) %>%
   summarize(popIncrease = max(change)) %>% 
   arrange(desc(popIncrease))
-knitr::kable(df) # print out table
+df # print out table
 ggplot(df, aes(country,popIncrease)) +  
   geom_bar(stat = "identity") + 
   ggtitle("Max Drop in Population over 5 Year Span") + 
